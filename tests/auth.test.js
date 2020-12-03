@@ -6,8 +6,7 @@ const User = require('./../models/User');
 
 describe("Authentication", () => {
     const agent = request.agent(app);
-    let cookie;
-    
+
     // before testing, let's create a new connection to the database (in memory)
     beforeAll(async () => {
         await mongoose.connect(
@@ -80,6 +79,8 @@ describe("Authentication", () => {
             password: "superdifficultpassword"
         };
 
+        let authCookie;
+
         await agent
             .post('/singup')
             .send(newUser);
@@ -89,7 +90,7 @@ describe("Authentication", () => {
             .send(credentials);
             
         expect(response.status).toBe(200);
-        console.log(cookie.parse(response.headers['set-cookie'][0]));
-        expect(response.cookies.auth).toBeDefined();
+        authCookie = cookie.parse(response.headers['set-cookie'][0]).auth;
+        expect(authCookie).toBeDefined();
     });
 });
