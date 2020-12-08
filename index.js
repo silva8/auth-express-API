@@ -6,7 +6,8 @@ mongoose.connect(
     db.DATABASE, 
     { 
         useNewUrlParser: true, 
-        useUnifiedTopology: true 
+        useUnifiedTopology: true,
+        useCreateIndex: true
     },
     (err) => {
         if (err) console.log(err);

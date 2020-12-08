@@ -4,7 +4,44 @@ const { auth } = require('./../middlewares/auth');
 
 const router = express.Router();
 
-// "singup" node - create a new user
+/**
+ * @swagger
+ *
+ * /signup:
+ *      post:
+ *          summary: Signup into the aplication
+ *          tags: [Authentication]
+ *          produces:
+ *              - application/json
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/x-www-form-urlencoded:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              firstname:
+ *                                  type: string
+ *                              lastname:
+ *                                  type: string
+ *                              email:
+ *                                  type: string
+ *                              password:
+ *                                  type: string
+ *                              password2:
+ *                                  type: string
+ *                          required:
+ *                              - firstname
+ *                              - lastname
+ *                              - email
+ *                              - password
+ *                              - password2
+ *          responses:
+ *              201:
+ *                  description: User created
+ *              409:
+ *                  description: Conflict. Passwords do not match or email already in use
+ */
 router.post('/singup', async (req, res) => {
     let newUser = new User(req.body);
 
@@ -21,6 +58,36 @@ router.post('/singup', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ *
+ * /login:
+ *      post:
+ *          summary: Login into the aplication
+ *          tags: [Authentication]
+ *          produces:
+ *              - application/json
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/x-www-form-urlencoded:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              email:
+ *                                  type: string
+ *                              password:
+ *                                  type: string
+ *                          required:
+ *                              - email
+ *                              - password
+ *          responses:
+ *              200:
+ *                  description: User authenticated
+ *                  
+ *              401:
+ *                  description: Invalid credentials. Incorrect email or password
+ */
 router.post('/login', (req, res) => {
     const {email, password} = req.body;
 
@@ -46,6 +113,24 @@ router.post('/login', (req, res) => {
     });
 });
 
+/**
+ * @swagger
+ *
+ * /logout:
+ *      post:
+ *          summary: Logout from the aplication
+ *          tags: [Authentication]
+ *          produces:
+ *              - application/json
+ *          parameters:
+ *              - name: auth
+ *                in: cookie
+ *                schema:
+ *                  type: string
+ *          responses:
+ *              204:
+ *                  description: User logged out succesfully
+ */
 router.post('/logout', auth, (req, res) => {
     req.user.deleteToken((err, user) => {
         if (err) return res.status(500).json({ error: "a server error has ocurred" });
